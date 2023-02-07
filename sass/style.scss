@@ -1,0 +1,1017 @@
+@charset "utf-8";
+
+/*================================
+mixin
+===============================*/
+// レイアウト幅
+$layout-width-inner: 1440px;
+
+// ブレークポイント
+$breakpoints: (
+  "sp": "screen and (max-width: 767px)",
+  "tab": "screen and (max-width: #{$layout-width-inner - 1px})",
+  "pc": "screen and (min-width: #{$layout-width-inner})",
+);
+
+// メディアクエリー
+@mixin mq($breakpoint: pc) {
+  @media #{map-get($breakpoints, $breakpoint)} {
+    @content;
+  }
+}
+
+/*================================
+font
+===============================*/
+$font-en: "Lora", serif;
+
+/*================================
+color
+===============================*/
+
+$font-color: #333;
+
+/*================================
+common - 共通スタイル
+===============================*/
+
+@include mq(sp) {
+  .is-pc {
+    display: none;
+  }
+}
+
+@include mq(pc) {
+  .is-sp {
+    display: none;
+  }
+}
+
+/*================================
+base
+===============================*/
+
+html {
+  overflow: auto;
+}
+body {
+  overflow: hidden;
+}
+
+body {
+  font-family: "Noto Sans JP", sans-serif;
+  line-height: 1.5;
+  font-size: 16px;
+  background: #fff;
+  color: $font-color;
+  background: url(../img/black_scales.png);
+}
+
+a {
+  transition: all 0.3s ease 0s;
+}
+
+.inner {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 120px;
+
+  @include mq("tab") {
+    padding: 0 40px;
+  }
+
+  @include mq("sp") {
+    padding: 0 20px;
+  }
+}
+
+/*================================
+shutter
+===============================*/
+
+.shutter {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: $font-color;
+  z-index: 10000;
+}
+.shutter::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: #fff;
+}
+/* end@shutter */
+
+/* @shutter anime */
+.shutter {
+  animation: shutterClose 2.6s forwards 1;
+}
+.shutter::before {
+  animation: shutterOpen 2.6s forwards 1;
+}
+
+@keyframes shutterClose {
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+    z-index: -1;
+  }
+}
+@keyframes shutterOpen {
+  0% {
+    width: 0;
+    height: 2px;
+  }
+  50% {
+    width: 100%;
+    height: 2px;
+  }
+  90% {
+    width: 100%;
+    height: 100%;
+  }
+  100% {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/*================================
+header
+===============================*/
+header {
+  background: transparent;
+  height: 100px;
+  width: 100%;
+  //位置固定
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  box-shadow: 0 3px 3px rgba(#000, 0.16);
+
+  @include mq("tab") {
+    height: 80px;
+  }
+
+  @include mq("sp") {
+    height: 60px;
+  }
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  height: inherit;
+}
+
+.header-logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  font-family: $font-en;
+
+  img {
+    display: block;
+
+    @include mq("tab") {
+      font-size: 20px;
+    }
+
+    @include mq("sp") {
+      font-size: 16px;
+    }
+  }
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+
+  @include mq("sp") {
+    display: none;
+  }
+
+  li {
+    &:not(:first-child) {
+      margin-left: 35px;
+      padding-left: 5px;
+    }
+
+    a {
+      //リストの中の指定したリンクに下線をつける
+      color: #fff;
+      font-family: $font-en;
+      font-weight: bold;
+    }
+  }
+}
+
+/*================================
+drawer
+===============================*/
+.drawer-icon {
+  position: fixed;
+  top: 20px;
+  right: 16px;
+  z-index: 20;
+  display: none;
+  transition: transform 0.5s ease 0s;
+
+  @include mq("sp") {
+    display: block;
+  }
+
+  &.is-active {
+    transform: translateX(0px);
+    .drawer-icon-bar1 {
+      transform: rotate(-45deg);
+      top: 8px;
+    }
+    .drawer-icon-bar2 {
+      display: none;
+    }
+    .drawer-icon-bar3 {
+      transform: rotate(45deg);
+      top: 8px;
+    }
+  }
+}
+.drawer-icon-bars {
+  width: 22px;
+  height: 20px;
+  display: block;
+  position: relative;
+}
+.drawer-icon-bar1,
+.drawer-icon-bar2,
+.drawer-icon-bar3 {
+  position: absolute;
+  width: 22px;
+  height: 3px;
+  background: #fff;
+  top: 0;
+  left: 0;
+}
+
+.drawer-icon-bar1 {
+  top: 0;
+}
+.drawer-icon-bar2 {
+  top: 8px;
+}
+.drawer-icon-bar3 {
+  top: 16px;
+}
+
+.drawer-content {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background: $font-color;
+  box-shadow: 0 0 3px rgba(#000, 0.16);
+  z-index: 18;
+  transform: translateX(105%);
+  transition: transform 0.5s ease 0s;
+  padding: 150px 80px 0;
+
+  &.is-active {
+    transform: translateX(0);
+  }
+}
+.drawer-content-item {
+  padding: 20px;
+
+  a {
+    display: block;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 20px;
+    text-align: center;
+    font-family: $font-en;
+  }
+}
+
+.drawer-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(#000, 0.8);
+  z-index: 16;
+  display: none;
+
+  &.is-active {
+    display: block;
+  }
+}
+
+/*================================
+top
+===============================*/
+.top {
+  position: relative;
+  background: url(../img/sebastian-unrau-sp-p7uuT0tw-unsplasha.png) no-repeat
+    center center / cover;
+  width: 100%;
+  height: 100vh;
+}
+.top-body {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.top-title {
+  font-size: 55px;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+  text-shadow: 3px 3px 6px rgba(255, 255, 255, 0.3);
+
+  @include mq(sp) {
+    font-size: 36px;
+  }
+}
+.top-button {
+  width: 300px;
+  display: block;
+  margin: 0 auto;
+  padding: 20px 40px;
+  background: #fff;
+  color: $font-color;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 50px;
+  box-shadow: 3px 3px 6px rgba(255, 255, 255, 0.3);
+  margin-top: 30px;
+
+  &:hover {
+    background: $font-color;
+    color: #fff;
+  }
+}
+
+/*================================
+top-scroll
+===============================*/
+.top-scroll {
+  /*描画位置※位置は適宜調整してください*/
+  position: absolute;
+  bottom: 1%;
+  right: 50%;
+  /*矢印の動き1秒かけて永遠にループ*/
+  animation: arrowmove 1s ease-in-out infinite;
+}
+
+/*下からの距離が変化して全体が下→上→下に動く*/
+@keyframes arrowmove {
+  0% {
+    bottom: 1%;
+  }
+  50% {
+    bottom: 3%;
+  }
+  100% {
+    bottom: 1%;
+  }
+}
+
+/*Scrollテキストの描写*/
+.top-scroll span {
+  /*描画位置*/
+  position: absolute;
+  left: -20px;
+  bottom: 10px;
+  /*テキストの形状*/
+  color: #eee;
+  font-size: 0.8rem;
+  font-family: $font-en;
+  letter-spacing: 0.05em;
+  /*縦書き設定*/
+  -ms-writing-mode: tb-rl;
+  -webkit-writing-mode: vertical-rl;
+  writing-mode: vertical-rl;
+}
+
+/* 矢印の描写 */
+.top-scroll:before {
+  content: "";
+  /*描画位置*/
+  position: absolute;
+  bottom: 0;
+  right: -6px;
+  /*矢印の形状*/
+  width: 1px;
+  height: 20px;
+  background: #eee;
+  transform: skewX(-31deg);
+}
+
+.top-scroll:after {
+  content: "";
+  /*描画位置*/
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  /*矢印の形状*/
+  width: 1px;
+  height: 50px;
+  background: #eee;
+}
+
+/*================================
+about
+===============================*/
+.about {
+  padding: 240px 200px 120px;
+
+  @include mq(tab) {
+    padding: 120px 20px 60px;
+  }
+}
+
+.about-wrapper {
+  display: flex;
+  justify-content: center;
+
+  @include mq(sp) {
+    flex-direction: column;
+  }
+}
+.about-left {
+  margin-right: 50px;
+
+  @include mq(tab) {
+  }
+
+  @include mq(sp) {
+    margin-right: 0;
+  }
+  img {
+    border-radius: 50%;
+    width: 300px;
+  }
+}
+.about-right {
+  width: calc(100% - 300px);
+
+  @include mq(tab) {
+    width: 50%;
+  }
+
+  @include mq(sp) {
+    width: 100%;
+    margin-top: 50px;
+  }
+}
+.about-title {
+  font-size: 100px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  font-family: $font-en;
+
+  @include mq(sp) {
+    font-size: 70px;
+    text-align: center;
+  }
+
+  &::after {
+    content: "自己紹介";
+    display: inline-block;
+    font-size: 30px;
+    position: absolute;
+    top: 55%;
+    left: 17%;
+    transform: translateY(-50%);
+    color: #fff;
+
+    @include mq(tab) {
+      left: 27%;
+    }
+
+    @include mq(sp) {
+      left: 40%;
+      font-size: 20px;
+    }
+  }
+}
+.about-text {
+  color: #fff;
+  line-height: 2;
+}
+
+/*================================
+skill
+===============================*/
+.skill {
+  padding: 120px 100px;
+
+  @include mq(tab) {
+    padding: 60px 20px;
+  }
+}
+.skill-title {
+  font-size: 100px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  font-family: $font-en;
+  text-align: center;
+
+  @include mq(sp) {
+    font-size: 70px;
+  }
+
+  &::after {
+    content: "スキル";
+    display: inline-block;
+    font-size: 30px;
+    position: absolute;
+    top: 50%;
+    left: 47%;
+    transform: translateY(-50%);
+    color: #fff;
+
+    @include mq(tab) {
+      left: 45%;
+    }
+
+    @include mq(sp) {
+      left: 42%;
+      font-size: 20px;
+    }
+  }
+}
+.skill-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  text-align: center;
+  margin-top: 30px;
+
+  @include mq(sp) {
+    flex-direction: column;
+  }
+}
+.skill-item {
+  width: 30%;
+  padding: 32px;
+  background: rgba(#000, 0.4);
+  box-shadow: 3px 3px 6px rgba(255, 255, 255, 0.6);
+
+  @include mq(tab) {
+    width: 45%;
+  }
+
+  @include mq(sp) {
+    width: 100%;
+  }
+
+  &:nth-child(n + 4) {
+    margin-top: 50px;
+  }
+
+  @include mq(tab) {
+    &:nth-child(n + 1) {
+      margin-top: 30px;
+    }
+  }
+
+  @include mq(sp) {
+    &:nth-child(n + 1) {
+      margin-top: 30px;
+    }
+  }
+}
+.skill-image {
+  width: 100px;
+}
+.skill-text {
+  color: #fff;
+  margin-top: 10px;
+  font-size: 24px;
+  font-family: $font-en;
+}
+
+/*================================
+service
+===============================*/
+.service {
+  padding: 120px 100px;
+
+  @include mq(tab) {
+    padding: 60px 20px;
+  }
+}
+.service-heading-title {
+  font-size: 100px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  font-family: $font-en;
+  text-align: center;
+
+  @include mq(sp) {
+    font-size: 70px;
+  }
+
+  &::after {
+    content: "サービス内容";
+    font-size: 30px;
+    position: absolute;
+    top: 54%;
+    left: 42%;
+    transform: translateY(-50%);
+    color: #fff;
+
+    @include mq(tab) {
+      left: 38%;
+    }
+
+    @include mq(sp) {
+      left: 32%;
+      font-size: 20px;
+    }
+  }
+}
+.service-wrapper {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  margin-top: 30px;
+
+  @include mq(sp) {
+    flex-direction: column;
+  }
+}
+.service-item {
+  width: 30%;
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 3px 3px 6px rgba(255, 255, 255, 0.6);
+
+  @include mq(sp) {
+    width: 100%;
+    margin-top: 30px;
+  }
+}
+.service-image {
+  width: 100px;
+}
+.service-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 20px;
+}
+.service-text {
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: left;
+}
+
+/*================================
+works
+===============================*/
+.works {
+  @include mq("sp") {
+    padding: 60px 20px;
+  }
+}
+.works-title {
+  font-size: 100px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  font-family: $font-en;
+  text-align: center;
+  margin-bottom: 20px;
+
+  @include mq(sp) {
+    font-size: 70px;
+  }
+
+  &::after {
+    content: "私の作品";
+    font-size: 30px;
+    position: absolute;
+    top: 53%;
+    left: 45.5%;
+    transform: translateY(-50%);
+    color: #fff;
+
+    @include mq(tab) {
+      left: 44%;
+    }
+
+    @include mq(sp) {
+      left: 40%;
+      font-size: 20px;
+    }
+  }
+}
+
+/*================================
+swiper
+===============================*/
+
+.works {
+  padding: 120px 200px;
+  @include mq("tab") {
+    padding: 60px 20px 0;
+  }
+}
+.swiper {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 16px;
+  background: transparent;
+
+  /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: transparent;
+}
+
+.swiper-button-next {
+  width: 40px;
+  height: 40px;
+  margin-top: -20px;
+  background: transparent url(../img/arrow-next.png) no-repeat center center /
+    contain;
+  right: 0px;
+
+  @include mq("tab") {
+    right: 0px;
+  }
+
+  @include mq("sp") {
+    right: 10px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &::after {
+    display: none;
+  }
+}
+
+.swiper-button-prev {
+  width: 40px;
+  height: 40px;
+  margin-top: -20px;
+  background: transparent url(../img/arrow-prev.png) no-repeat center center /
+    contain;
+  left: 0;
+
+  @include mq("tab") {
+    left: 0px;
+  }
+
+  @include mq("sp") {
+    left: 10px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &::after {
+    display: none;
+  }
+}
+
+/*================================
+contact
+===============================*/
+.contact {
+  padding: 120px 100px;
+
+  @include mq("tab") {
+    padding: 60px 20px;
+  }
+}
+.contact-forms {
+  width: 700px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 80px 50px;
+
+  @include mq("sp") {
+    padding: 0;
+  }
+}
+.contact-head-title {
+  font-size: 100px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.1);
+  position: relative;
+  font-family: $font-en;
+  text-align: center;
+  margin-bottom: 20px;
+
+  @include mq(sp) {
+    font-size: 70px;
+  }
+
+  &::after {
+    content: "お問い合わせ";
+    font-size: 30px;
+    position: absolute;
+    top: 53%;
+    left: 43%;
+    transform: translateY(-50%);
+    color: #fff;
+
+    @include mq("tab") {
+      left: 39%;
+    }
+
+    @include mq(sp) {
+      left: 32%;
+      font-size: 20px;
+    }
+  }
+}
+.contact-form-row {
+  &:not(:first-child) {
+    margin-top: 25px;
+  }
+}
+
+.contact-form-label {
+  width: 160px;
+  padding-bottom: 5px;
+  color: #fff;
+
+  label {
+    font-weight: bold;
+  }
+}
+.contact-form-input {
+  font-size: 16px;
+  letter-spacing: 0.05em;
+
+  [type="text"] {
+    border: 1px solid #fff;
+    padding: 8px 16px;
+    font-size: 14px;
+    width: 100%;
+    background: #fff;
+
+    &:hover {
+      border-color: tomato;
+    }
+  }
+  [type="email"] {
+    border: 1px solid #fff;
+    padding: 8px 16px;
+    font-size: 14px;
+    width: 100%;
+    background: #fff;
+
+    &:hover {
+      border-color: tomato;
+    }
+  }
+  textarea {
+    height: 170px;
+    border: 1px solid #fff;
+    padding: 12px 16px;
+    font-size: 14px;
+    width: 100%;
+    background: #fff;
+
+    &:hover {
+      border-color: tomato;
+    }
+  }
+}
+
+.contact-button {
+  margin-top: 50px;
+  text-align: center;
+
+  [type="submit"] {
+    display: inline-block;
+    background: #fff;
+    color: $font-color;
+    font-weight: bold;
+    width: 235px;
+    padding: 20px;
+    border-radius: 50px;
+    box-shadow: 3px 3px 6px rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+
+    &:hover,
+    &:not(.-submit) {
+      background: $font-color;
+      color: #fff;
+    }
+  }
+}
+
+.contact-message {
+  text-align: center;
+  margin-top: 60px;
+  display: none;
+  color: #fff;
+  font-size: 24px;
+
+  &.-error {
+    color: #f00;
+  }
+}
+
+/*================================
+footer
+===============================*/
+.footer {
+  background: $font-color;
+  padding: 30px 0;
+}
+.copyright {
+  font-size: 12px;
+  text-align: center;
+  color: #fff;
+  font-family: $font-en;
+
+  @include mq(sp) {
+    font-size: 10px;
+  }
+}
+
+/*================================
+ページTOPに戻る
+===============================*/
+.to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease 0s;
+
+  @include mq("sp") {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  &.is-show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  a {
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  img {
+    width: 50px;
+
+    @include mq("sp") {
+      width: 30px;
+    }
+  }
+}
